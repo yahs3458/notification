@@ -1,0 +1,29 @@
+<ion-toolbar class="login-header ion-padding">
+  <h1 style="margin-top: 10px">PHARMACY COUNCIL OF INDIA</h1>
+</ion-toolbar>
+<ion-content class="ion-padding">
+  <div>
+    <ion-img src="../../../assets/PCI_Logo-new.png" alt="Logo" style="height: 200px"></ion-img>
+  </div>
+  <h1>Welcome,</h1>
+  <h3>Sign in to continue!</h3>
+  <ion-form [formGroup]="loginForm" class="login-form">
+    <ion-item>
+      <ion-input style="width: 60px; font-weight: bold;" type="text" formControlName="user" readonly="true"></ion-input>
+
+      <ion-input labelPlacement="stacked" placeholder="BH(number)" type="text" inputmode="email" autofocus="true"
+        formControlName="userName" required=""></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input labelPlacement="stacked" placeholder="Password" formControlName="password" type="password"
+        type="{{ showPassword ? 'text' : 'password' }}" required></ion-input>
+      <p style="color: #9b9b9b; font-size: 12px" (click)="togglePasswordVisibility()">
+        {{ show_hide ? "Hide" : "Show" }}
+      </p>
+    </ion-item>
+    <ion-button expand="full" (click)="onSubmit()">{{ btnLogin }}</ion-button>
+
+    <ion-toast icon="globe" [isOpen]="isToastOpen" message="{{message}}" [duration]="2000" color="danger"></ion-toast>
+    </ion-form>
+
+</ion-content>
