@@ -44,7 +44,6 @@ export class LoginComponent  implements OnInit {
 
     this.loginForm = this.formBuilder.group({
       userName: ['', [Validators.required]],
-      user: ['BH-P-'],
       password: ['', Validators.required],
     });
   }
@@ -79,7 +78,7 @@ export class LoginComponent  implements OnInit {
 
     this.loading = true;
     const obj = {
-      userName: this.loginForm.controls['user'].value + this.loginForm.controls['userName'].value,
+      userName:  this.loginForm.controls['userName'].value,
       password: this.loginForm.controls['password'].value,
     };
 
