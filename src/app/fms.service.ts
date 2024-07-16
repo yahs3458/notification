@@ -116,7 +116,14 @@ export class FmsService {
   }
 
   sendTokenToServer(FcmToken: any) {
-    this.posthospitalDetails(FcmToken).subscribe()
+    console.log("send token done ")
+    this.posthospitalDetails(FcmToken).subscribe({
+      next: (res) => {
+        console.log("send token done ", res)
+      },error(err){
+        console.log("send token error ", err)
+      }
+    })
   }
 
   posthospitalDetails(data: any): Observable<any> {

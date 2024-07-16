@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "311543167442",
+    "project_id": "loginnotify-21caf",
+    "storage_bucket": "loginnotify-21caf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311543167442:android:4ace1bd34b3e1b64e9300b",
+        "android_client_info": {
+          "package_name": "notification.ionic.starter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8dAmh8T5YE3fN2_33Ch5gjkw2y3gj4Kg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
