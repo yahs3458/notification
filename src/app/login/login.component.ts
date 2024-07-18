@@ -125,7 +125,7 @@ export class LoginComponent  implements OnInit {
     this.authService.getBootInfo().subscribe({
       next: (res) => {
         this.set_Cache(res);
-        this.router.navigate(['notify']);
+        this.router.navigate(['dashboard']);
       },
       error: (res) => {
         console.error('Error fetching boot info:', res);

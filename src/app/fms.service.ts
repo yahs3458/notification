@@ -3,28 +3,33 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import {
-  ActionPerformed,
   PushNotificationSchema,
   PushNotifications,
   Token,
+  ActionPerformed
 } from '@capacitor/push-notifications';
 import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { ServiceService } from './service.service';
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class FmsService {
 
   APIPostUrl = 'Firebase/RegisterFcmToken';
-  authService: any;
+  APIBaseUrl: string;
+  APIGetUrl = 'NotificationLog/get_notificationLogs'
 
   constructor(
     private http: HttpClient,
     private route: Router,
     private alertController: AlertController,
-    private service : ServiceService
-  ) { }
+    private service: ServiceService
+  ) {
+    this.APIBaseUrl = environment.API_BASE_URL;
+  }
 
   initPush(sid: any) {
     if (Capacitor.getPlatform() !== 'web') {
@@ -46,7 +51,8 @@ export class FmsService {
         user_id: sid,
         token: token.value,
         device: Capacitor.getPlatform()
-      }
+      };
+      console.log(obj);
       this.sendTokenToServer(obj);
     });
 
@@ -57,90 +63,100 @@ export class FmsService {
     PushNotifications.addListener(
       'pushNotificationReceived',
       (notification: PushNotificationSchema) => {
-        if (notification.title && notification.title.toLowerCase().includes('logout')) {
-          // Fetch the ID
-          this.getDetailsById().subscribe({
-            next: (res) => {
-              const id = res.id;
-              this.presentAcceptRejectAlert(id);
-            },
-            error: (err) => {
-              console.error('Error fetching details by ID:', err);
-            }
-          });
-        } else {
-          this.presentAlert(notification);
-        }
+        this.presentAlert(notification);
       }
     );
-  }
 
-  async presentAcceptRejectAlert(id: string) {
-    const alert = await this.alertController.create({
-      header: ' Request',
-      message: 'Do you want to accept or reject the login request?',
-      buttons: [
-        {
-          text: 'Reject',
-          role: 'cancel',
-          handler: () => {
-            this.updateStatus(id, 'reject');
+    PushNotifications.addListener('pushNotificationActionPerformed', (notification: ActionPerformed) => {
+      const actionId = notification.actionId;
+      const data = notification.notification.data;
+      console.log(`Action ${actionId} was pressed`);
+      let limit = 20
+
+      if (actionId === 'accept' || actionId === 'reject') {
+        this.getDetailsById(limit).subscribe({
+          next: (res) => {
+            const id = res.id;
+            // this.updateStatus(id, actionId);
+          },
+          error: (err) => {
+            console.error('Error fetching details by ID:', err);
           }
-        },
-        {
-          text: 'Accept',
-          handler: () => {
-            this.updateStatus(id, 'accept');
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-  updateStatus(id: string, status: string) {
-    this.service.putstatus(id, status).subscribe({
-      next: (res) => {
-        if (status === 'accept') {
-          PushNotifications.removeAllListeners();
-        } else {
-          PushNotifications.removeAllListeners();
-          console.log('Logout request rejected');
-        }
-      },
-      error: (err) => {
-        console.error('Error updating status:', err);
+        });
       }
     });
-  }
-
-  sendTokenToServer(FcmToken: any) {
-    console.log("send token done ")
-    this.posthospitalDetails(FcmToken).subscribe({
-      next: (res) => {
-        console.log("send token done ", res)
-      },error(err){
-        console.log("send token error ", err)
-      }
-    })
-  }
-
-  posthospitalDetails(data: any): Observable<any> {
-    return this.http.post(this.APIPostUrl, data);
   }
 
   async presentAlert(notification: any) {
     const alert = await this.alertController.create({
       header: notification.title,
       message: notification.body,
-      buttons: ['Accept'],
+      buttons: [
+        {
+          text: 'OK',
+          role: 'cancel',
+          handler: () => {
+           
+          }
+        },
+      ]
     });
 
     await alert.present();
   }
 
-  getDetailsById(): Observable<any> {
-    return this.http.get<any>(''); 
-}
+  // handleNotificationAction(notification: any, action: string) {
+  //   if (action === 'accept' || action === 'reject') {
+  //     let limit = 20
+
+  //     this.getDetailsById(limit).subscribe({
+  //       next: (res) => {
+  //         const id = res.id;
+  //         this.updateStatus(id, action);
+  //       },
+  //       error: (err) => {
+  //         console.error('Error fetching details by ID:', err);
+  //       }
+  //     });
+  //   }
+  // }
+
+  // updateStatus(id: string, status: string) {
+  //   this.service.putstatus(id, status).subscribe({
+  //     next: (res) => {
+  //       if (status === 'accept') {
+  //         PushNotifications.removeAllListeners();
+  //       } else {
+  //         PushNotifications.removeAllListeners();
+  //         console.log('Logout request rejected');
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Error updating status:', err);
+  //     }
+  //   });
+  // }
+
+  sendTokenToServer(FcmToken: any) {
+    console.log("Sending token to server...");
+    this.posthospitalDetails(FcmToken).subscribe({
+      next: (res) => {
+        console.log("Token sent successfully", res);
+      },
+      error: (err) => {
+        console.error("Error sending token", err);
+        if (err && err.message) {
+          console.error("Error message:", err.message);
+        }
+      }
+    });
+  }
+
+  posthospitalDetails(data: any): Observable<any> {
+    return this.http.post(this.APIBaseUrl + this.APIPostUrl, data);
+  }
+
+  getDetailsById(limit: any): Observable<any> {
+    return this.http.get(this.APIBaseUrl + this.APIGetUrl + '/'+ limit);
+  }
 }

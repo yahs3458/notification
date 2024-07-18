@@ -11,13 +11,13 @@ export class ServiceService {
     this.APIBaseUrl = environment.API_BASE_URL;
   }
   APIBaseUrl: string;
-  APIUrl = '';
-  APIPUT = '';
-  getinstituteList(id: string): Observable<any> {
-    return this.http.get(this.APIBaseUrl + this.APIUrl + '/' + id);
-  }
+  APIUrl = 'NotificationLog/get_notificationLogs';
+  APIPUT = 'Account/received_logInPermission';
 
-  putstatus(id : any , status :string): Observable<any> {
-    return this.http.get(this.APIBaseUrl + this.APIPUT + '/'  + id  + '/'  + status);
+  getDetailsById(limit: any): Observable<any> {
+    return this.http.get(this.APIBaseUrl + this.APIUrl +  '/'  + limit);
+  }
+  putstatus(id : any , status :string ,docname:any): Observable<any> {
+    return this.http.get(this.APIBaseUrl + this.APIPUT + '/'  + status  + '/'  + id+ '/'  + docname);
   }
 }
