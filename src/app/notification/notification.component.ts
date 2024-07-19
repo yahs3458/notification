@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.scss'],
 })
-export class NotificationComponent implements OnInit {
+export class NotificationComponent  {
   notification_list: any[] = [];
   user_info: any[] = [];
 
@@ -23,7 +23,7 @@ export class NotificationComponent implements OnInit {
     private IonLoaderService: IonLoaderService
   ) {}
 
-  ngOnInit() {
+  ionViewDidEnter() {
     this.getNotificationlist();
   }
 

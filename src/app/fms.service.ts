@@ -105,38 +105,6 @@ export class FmsService {
     await alert.present();
   }
 
-  // handleNotificationAction(notification: any, action: string) {
-  //   if (action === 'accept' || action === 'reject') {
-  //     let limit = 20
-
-  //     this.getDetailsById(limit).subscribe({
-  //       next: (res) => {
-  //         const id = res.id;
-  //         this.updateStatus(id, action);
-  //       },
-  //       error: (err) => {
-  //         console.error('Error fetching details by ID:', err);
-  //       }
-  //     });
-  //   }
-  // }
-
-  // updateStatus(id: string, status: string) {
-  //   this.service.putstatus(id, status).subscribe({
-  //     next: (res) => {
-  //       if (status === 'accept') {
-  //         PushNotifications.removeAllListeners();
-  //       } else {
-  //         PushNotifications.removeAllListeners();
-  //         console.log('Logout request rejected');
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.error('Error updating status:', err);
-  //     }
-  //   });
-  // }
-
   sendTokenToServer(FcmToken: any) {
     console.log("Sending token to server...");
     this.posthospitalDetails(FcmToken).subscribe({
