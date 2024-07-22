@@ -6,19 +6,23 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationServiceService } from './authentication.service.service';
 import { SettingsService } from './settings.service';
 import { PushNotifications } from '@capacitor/push-notifications';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthServiceService {
   bootinfo: any = {};
+  API_BASE_URL = ""
 
   constructor(
     private authServices: AuthenticationServiceService,
     private route: Router,
     private http: HttpClient,
     private settingsService: SettingsService
-  ) { }
+  ) { 
+    this.API_BASE_URL = environment.API_BASE_URL
+  }
 
   login(loginForm: any): Observable<any> {
     return this.authServices.userlogin(loginForm).pipe(
@@ -28,16 +32,21 @@ export class AuthServiceService {
       })
     );
   }
-
   refreshToken(): Observable<any> {
-    const refreshToken = this.getRefreshToken();
-    return this.http.post<any>('Account/refreshtoken', { refreshToken }).pipe(
-      tap((response: any) => {
-        this.saveToken(response.token, response.refreshToken);
-      })
-    );
+    const refreshToken = localStorage.getItem('refreshToken');
+    const token = localStorage.getItem('access_token');
+    const username = localStorage.getItem('userName');
+  
+    const data = {
+      refreshToken: refreshToken,
+      token: token,
+      username: username,
+    };
+  
+    const url = `${this.API_BASE_URL}Account/refreshtoken`;
+    return this.http.post<any>(url, data);
   }
-
+  
   getBootInfo(): Observable<any> {
     return this.settingsService.getBootInfo().pipe();
   }

@@ -18,8 +18,10 @@ export class AppComponent {
   async ngOnInit() {
     this.authService.isAuthenticated();
     const isAuthenticated = await this.authService.isAuthenticated();
-    if (isAuthenticated) {
+    if (isAuthenticated === true ) {
       this.router.navigate(['/dashboard']);
+    }else {
+      this.router.navigate(['/login']);
     }
 
   }
